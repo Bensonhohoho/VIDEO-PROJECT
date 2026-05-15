@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/slime_bullet.gd" id="1_jawkl"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_d252f"]
+radius = 3.0
+
+[node name="SlimeBullet" type="Area2D"]
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1_jawkl")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_d252f")
+
+[node name="Visual" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-3, -3, 3, -3, 3, 3, -3, 3)
+color = Color(0.42352942, 0.93333334, 0.29803923, 1)
