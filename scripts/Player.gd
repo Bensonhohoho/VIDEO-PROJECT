@@ -12,7 +12,7 @@ var is_dead := false
 func _physics_process(delta: float) -> void:
 	if is_dead:
 		return
-	#test
+
 	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
