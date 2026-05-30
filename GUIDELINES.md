@@ -62,7 +62,7 @@ After that, the target and game flow systems decide what happens next.
 
 ## Player Responsibilities
 
-`Player.gd` owns player state and player-level consequences of damage:
+`player.gd` owns player state and player-level consequences of damage:
 
 - Tracking whether the player is already dead.
 - Deciding whether damage causes death.
@@ -97,7 +97,7 @@ the project is still in a very small prototype stage.
 ## Game Manager Responsibilities
 
 Game start, game over, restart, respawn timing, and scene reload belong in a
-manager script such as `game_manger.gd`.
+manager script such as `game_manager.gd`.
 
 The manager should listen to the player's `died` signal and handle game-level
 effects:
@@ -182,7 +182,7 @@ Keep the current lightweight pattern while the game is small:
 
 - `take_damage()` on damageable nodes.
 - `died` signal on the player.
-- Game flow in `game_manger.gd`.
+- Game flow in `game_manager.gd`.
 
 Consider adding a `HealthComponent` or `DamageInfo` object only when the project
 needs more features, such as:
@@ -210,4 +210,3 @@ The reverse direction should be avoided:
 ```text
 Bullet / Hazard -> Player internals -> Engine.time_scale -> reload_current_scene()
 ```
-

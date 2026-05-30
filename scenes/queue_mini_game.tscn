@@ -1,0 +1,113 @@
+[gd_scene format=3 uid="uid://brhwkwoxd8l0n"]
+
+[ext_resource type="Script" uid="uid://cyrluvhe66ygb" path="res://scripts/queue_player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://ch4bgqqjc315d" path="res://scripts/queue_zone.gd" id="2_queue_zone"]
+[ext_resource type="Script" uid="uid://bjtknpt0nvv88" path="res://scripts/queue_game_manager.gd" id="3_queue_manager"]
+[ext_resource type="Script" uid="uid://o68fr5qkl843" path="res://scripts/obstacle_spawner.gd" id="4_obstacle_spawner"]
+[ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="5_score_hud"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_player"]
+radius = 16.0
+
+[sub_resource type="Curve2D" id="Curve2D_queue_path"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 160, 240, 0, 0, 0, 0, 177, 77, 0, 0, 0, 0, 266, 34, 0, 0, 0, 0, 328, 326, 0, 0, 0, 0, 382, 377, 0, 0, 0, 0, 435, 325, 0, 0, 0, 0, 452, 94, 0, 0, 0, 0, 537, 40, 0, 0, 0, 0, 593, 317, 0, 0, 0, 0, 659, 335, 0, 0, 0, 0, 763, 293, 0, 0, 0, 0, 880, 240)
+}
+point_count = 12
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_queue"]
+size = Vector2(240, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
+size = Vector2(96, 220)
+
+[sub_resource type="LabelSettings" id="LabelSettings_result"]
+font_size = 32
+
+[node name="QueueMiniGame" type="Node2D" unique_id=809747258]
+
+[node name="Player" type="CharacterBody2D" parent="." unique_id=624964848]
+position = Vector2(160, 240)
+collision_layer = 2
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1481479903]
+shape = SubResource("CircleShape2D_player")
+
+[node name="Visual" type="Polygon2D" parent="Player" unique_id=824190235]
+color = Color(0.2, 0.65, 1, 1)
+polygon = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+
+[node name="SpawnPoint" type="Marker2D" parent="." unique_id=1219458551]
+position = Vector2(160, 240)
+
+[node name="QueuePath" type="Path2D" parent="." unique_id=1452800978]
+curve = SubResource("Curve2D_queue_path")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="QueuePath" unique_id=489343888]
+position = Vector2(160, 240)
+rotates = false
+loop = false
+
+[node name="QueueZone" type="Area2D" parent="QueuePath/PathFollow2D" unique_id=2119984193]
+collision_mask = 2
+script = ExtResource("2_queue_zone")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="QueuePath/PathFollow2D/QueueZone" unique_id=1134004633]
+shape = SubResource("RectangleShape2D_queue")
+
+[node name="Visual" type="Polygon2D" parent="QueuePath/PathFollow2D/QueueZone" unique_id=1714008565]
+color = Color(0.15, 0.85, 0.45, 0.25)
+polygon = PackedVector2Array(-120, -80, 120, -80, 120, 80, -120, 80)
+
+[node name="GoalArea" type="Area2D" parent="." unique_id=988417655]
+position = Vector2(880, 240)
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GoalArea" unique_id=848613290]
+shape = SubResource("RectangleShape2D_goal")
+
+[node name="Visual" type="Polygon2D" parent="GoalArea" unique_id=1887229558]
+color = Color(1, 0.8, 0.15, 0.35)
+polygon = PackedVector2Array(-48, -110, 48, -110, 48, 110, -48, 110)
+
+[node name="ObstacleSpawner" type="Node2D" parent="." unique_id=1072120460]
+script = ExtResource("4_obstacle_spawner")
+
+[node name="Timer" type="Timer" parent="ObstacleSpawner" unique_id=2134601424]
+wait_time = 1.25
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1069946262]
+
+[node name="ResultLabel" type="Label" parent="UI" unique_id=698643743]
+visible = false
+offset_left = 24.0
+offset_top = 24.0
+offset_right = 430.0
+offset_bottom = 72.0
+text = "You stayed in line!"
+label_settings = SubResource("LabelSettings_result")
+
+[node name="FailCountLabel" type="Label" parent="UI" unique_id=873840257]
+offset_left = 24.0
+offset_top = 78.0
+offset_right = 430.0
+offset_bottom = 126.0
+text = "Fails: 0 / 3"
+label_settings = SubResource("LabelSettings_result")
+
+[node name="ScoreLabel" type="Label" parent="UI" unique_id=1605968612]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 60.0
+theme_override_font_sizes/font_size = 24
+text = "Score: 0"
+horizontal_alignment = 2
+script = ExtResource("5_score_hud")
+
+[node name="QueueGameManager" type="Node" parent="." unique_id=102062141]
+script = ExtResource("3_queue_manager")

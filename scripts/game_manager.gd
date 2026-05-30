@@ -2,11 +2,9 @@ extends Node
 
 @export var restart_delay := 0.6
 @export var death_time_scale := 0.5
+@export var coin_score_reward := 1
 
-var score = 0
 var is_game_over := false
-
-@onready var score_label: Label = $"Score label"
 
 
 func _ready():
@@ -18,8 +16,8 @@ func _ready():
 
 
 func add_point():
-	score += 1
-	score_label.text = "You collected " + str(score) + " coins."
+	# Coins now feed the same saved total as the queue mini-game reward.
+	SaveManager.add_score(coin_score_reward)
 
 
 func _on_player_died(_source: Node = null) -> void:
