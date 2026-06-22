@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://brhwkwoxd8l0n"]
+[gd_scene format=3]
 
 [ext_resource type="Script" uid="uid://cyrluvhe66ygb" path="res://scripts/queue_player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://ch4bgqqjc315d" path="res://scripts/queue_zone.gd" id="2_queue_zone"]
@@ -24,7 +24,7 @@ size = Vector2(96, 220)
 [sub_resource type="LabelSettings" id="LabelSettings_result"]
 font_size = 32
 
-[node name="QueueMiniGame" type="Node2D" unique_id=809747258]
+[node name="QueueLevel1_1" type="Node2D" unique_id=809747258]
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=624964848]
 position = Vector2(160, 240)

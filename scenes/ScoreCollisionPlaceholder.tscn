@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/score_collision_placeholder.gd" id="1_score_placeholder"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_score_placeholder"]
+size = Vector2(6, 10)
+
+[node name="ScoreCollisionPlaceholder" type="StaticBody2D"]
+script = ExtResource("1_score_placeholder")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_score_placeholder")
+
+[node name="Visual" type="Polygon2D" parent="."]
+color = Color(0.38, 0.2, 0.62, 0.95)
+polygon = PackedVector2Array(-3, -5, 3, -5, 3, 5, -3, 5)

@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://scenes/shooting_slime.tscn" id="11_pq7e8"]
 [ext_resource type="Script" uid="uid://cvhlg0e3fmuey" path="res://scripts/queue_entrance.gd" id="12_queue_entrance"]
 [ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="13_score_hud"]
+[ext_resource type="Script" uid="uid://bemepujlmtrnn" path="res://scripts/score_placeholder_manager.gd" id="14_score_placeholder_manager"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbhrr"]
 texture = ExtResource("3_lnu2h")
@@ -345,12 +346,151 @@ polygon = PackedVector2Array(-14, -28, 14, -28, 14, 36, -14, 36)
 offset_left = -26.0
 offset_top = -58.0
 offset_right = 26.0
-offset_bottom = -48.0
+offset_bottom = -42.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 7
+text = "VOTE UP"
+horizontal_alignment = 1
+
+[node name="InteractionPoint" type="Marker2D" parent="QueueEntrance" unique_id=864103752]
+
+[node name="EventMapPlaceholders" type="Node2D" parent="." unique_id=1108093360]
+
+[node name="StageArea" type="Node2D" parent="EventMapPlaceholders" unique_id=694407427]
+position = Vector2(638, 60)
+
+[node name="StageBase" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=402719685]
+color = Color(0.18, 0.16, 0.22, 0.75)
+polygon = PackedVector2Array(-176, 34, 176, 34, 176, 70, -176, 70)
+
+[node name="BackWall" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=839255459]
+color = Color(0.08, 0.1, 0.16, 0.55)
+polygon = PackedVector2Array(-150, -100, 150, -100, 150, 34, -150, 34)
+
+[node name="IdolPoster" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=648778138]
+color = Color(0.95, 0.5, 0.68, 0.7)
+polygon = PackedVector2Array(-54, -82, 54, -82, 54, -10, -54, -10)
+
+[node name="PosterLabel" type="Label" parent="EventMapPlaceholders/StageArea" unique_id=797169660]
+offset_left = -38.0
+offset_top = -58.0
+offset_right = 38.0
+offset_bottom = -42.0
 theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
 theme_override_fonts/font = ExtResource("9_vtaks")
 theme_override_font_sizes/font_size = 8
-text = "UP"
+text = "POSTER"
 horizontal_alignment = 1
+
+[node name="LeftSpeaker" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=739103342]
+color = Color(0.05, 0.05, 0.07, 0.9)
+polygon = PackedVector2Array(-138, -12, -102, -12, -102, 54, -138, 54)
+
+[node name="RightSpeaker" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=500338962]
+color = Color(0.05, 0.05, 0.07, 0.9)
+polygon = PackedVector2Array(102, -12, 138, -12, 138, 54, 102, 54)
+
+[node name="LeftLightTower" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=1541997700]
+color = Color(0.38, 0.44, 0.5, 0.75)
+polygon = PackedVector2Array(-166, -98, -154, -98, -154, 54, -166, 54)
+
+[node name="RightLightTower" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=1064919411]
+color = Color(0.38, 0.44, 0.5, 0.75)
+polygon = PackedVector2Array(154, -98, 166, -98, 166, 54, 154, 54)
+
+[node name="LightRig" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=281490260]
+color = Color(0.9, 0.76, 0.18, 0.65)
+polygon = PackedVector2Array(-166, -104, 166, -104, 166, -94, -166, -94)
+
+[node name="AudienceArea" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=1566092694]
+color = Color(0.16, 0.4, 0.75, 0.18)
+polygon = PackedVector2Array(-194, 76, 194, 76, 194, 126, -194, 126)
+
+[node name="FrontBarrier" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=216169534]
+color = Color(0.95, 0.8, 0.18, 0.8)
+polygon = PackedVector2Array(-188, 66, 188, 66, 188, 74, -188, 74)
+
+[node name="MerchStand" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=777679309]
+color = Color(0.18, 0.62, 0.45, 0.75)
+polygon = PackedVector2Array(-232, 30, -184, 30, -184, 72, -232, 72)
+
+[node name="MerchLabel" type="Label" parent="EventMapPlaceholders/StageArea" unique_id=636722936]
+offset_left = -228.0
+offset_top = 42.0
+offset_right = -188.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 6
+text = "MERCH"
+horizontal_alignment = 1
+
+[node name="DrinkStand" type="Polygon2D" parent="EventMapPlaceholders/StageArea" unique_id=892813482]
+color = Color(0.3, 0.55, 0.92, 0.75)
+polygon = PackedVector2Array(184, 30, 232, 30, 232, 72, 184, 72)
+
+[node name="DrinkLabel" type="Label" parent="EventMapPlaceholders/StageArea" unique_id=1543612291]
+offset_left = 188.0
+offset_top = 42.0
+offset_right = 228.0
+offset_bottom = 54.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 6
+text = "DRINKS"
+horizontal_alignment = 1
+
+[node name="VotingEntranceDressing" type="Node2D" parent="EventMapPlaceholders" unique_id=1677420427]
+position = Vector2(-112, 10)
+
+[node name="VotingSign" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=1741077265]
+position = Vector2(117, 1)
+color = Color(0.95, 0.78, 0.16, 0.9)
+polygon = PackedVector2Array(-46, -78, 46, -78, 46, -52, -46, -52)
+
+[node name="VotingSignLabel" type="Label" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=15746530]
+offset_left = 84.0
+offset_top = -70.0
+offset_right = 168.0
+offset_bottom = -56.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 7
+text = "VOTING"
+horizontal_alignment = 1
+
+[node name="LeftQueueBarrier" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=677593153]
+color = Color(0.95, 0.8, 0.18, 0.75)
+polygon = PackedVector2Array(-86, 46, -34, 46, -34, 54, -86, 54)
+
+[node name="RightQueueBarrier" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=1283308573]
+color = Color(0.95, 0.8, 0.18, 0.75)
+polygon = PackedVector2Array(34, 46, 86, 46, 86, 54, 34, 54)
+
+[node name="DirectionArrow" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=675604164]
+color = Color(0.2, 0.7, 0.95, 0.85)
+polygon = PackedVector2Array(-112, -8, -70, -8, -70, -22, -42, 4, -70, 30, -70, 16, -112, 16)
+
+[node name="StaffNPC" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=2001773667]
+position = Vector2(-26, -21)
+color = Color(0.65, 0.32, 0.9, 0.85)
+polygon = PackedVector2Array(66, -18, 90, -18, 90, 34, 66, 34)
+
+[node name="StaffLabel" type="Label" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=85212249]
+offset_left = 58.0
+offset_top = -36.0
+offset_right = 98.0
+offset_bottom = -24.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 6
+text = "STAFF"
+horizontal_alignment = 1
+
+[node name="VotingBoothGate" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=1512990642]
+color = Color(0.18, 0.42, 0.68, 0.65)
+polygon = PackedVector2Array(-18, -38, 18, -38, 18, 42, -18, 42)
 
 [node name="Slime" parent="." unique_id=2013225801 instance=ExtResource("7_u5sy4")]
 position = Vector2(578, 63)
@@ -364,6 +504,41 @@ position = Vector2(251, 95)
 [node name="GameManager" type="Node" parent="." unique_id=1392251320]
 unique_name_in_owner = true
 script = ExtResource("8_0tnpc")
+
+[node name="ScorePlaceholderMarkers" type="Node2D" parent="." unique_id=991527484]
+
+[node name="Marker1" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=908786244]
+position = Vector2(126, 106)
+
+[node name="Marker2" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=2134337038]
+position = Vector2(194, 106)
+
+[node name="Marker3" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=1739207116]
+position = Vector2(270, 96)
+
+[node name="Marker4" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=481905092]
+position = Vector2(455, 42)
+
+[node name="Marker5" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=538624880]
+position = Vector2(514, 42)
+
+[node name="Marker6" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=1127059411]
+position = Vector2(626, -70)
+
+[node name="Marker7" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=196853457]
+position = Vector2(682, 62)
+
+[node name="Marker8" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=845259026]
+position = Vector2(762, 62)
+
+[node name="Marker9" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=1833895770]
+position = Vector2(852, -6)
+
+[node name="Marker10" type="Marker2D" parent="ScorePlaceholderMarkers" unique_id=1301999101]
+position = Vector2(946, -6)
+
+[node name="ScorePlaceholderManager" type="Node2D" parent="." unique_id=1114110605]
+script = ExtResource("14_score_placeholder_manager")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=1070882954]
 
@@ -382,6 +557,36 @@ text = "Score: 0"
 horizontal_alignment = 2
 autowrap_mode = 2
 script = ExtResource("13_score_hud")
+
+[node name="RoundScoreLabel" type="Label" parent="UI" unique_id=794021356]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -176.0
+offset_top = 46.0
+offset_right = -16.0
+offset_bottom = 74.0
+theme_override_colors/font_color = Color(0.011764706, 0.14901961, 0.34901962, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 16
+text = "Round: 0 / 30"
+horizontal_alignment = 2
+autowrap_mode = 2
+script = ExtResource("13_score_hud")
+display_mode = 1
+
+[node name="VictoryLabel" type="Label" parent="UI" unique_id=871604033]
+visible = false
+offset_left = -152.0
+offset_top = -12.0
+offset_right = 188.0
+offset_bottom = 24.0
+theme_override_colors/font_color = Color(0.95, 0.78, 0.1, 1)
+theme_override_fonts/font = ExtResource("9_vtaks")
+theme_override_font_sizes/font_size = 16
+text = "Victory! Goal Completed"
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="Label" type="Label" parent="." unique_id=1540006586]
 offset_left = -156.0

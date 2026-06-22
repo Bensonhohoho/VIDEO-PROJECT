@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://brhwkwoxd8l0n"]
+[gd_scene format=3]
 
 [ext_resource type="Script" uid="uid://cyrluvhe66ygb" path="res://scripts/queue_player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://ch4bgqqjc315d" path="res://scripts/queue_zone.gd" id="2_queue_zone"]
@@ -16,7 +16,7 @@ _data = {
 point_count = 28
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_queue"]
-size = Vector2(260, 180)
+size = Vector2(170, 110)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_goal"]
 size = Vector2(96, 220)
@@ -24,7 +24,7 @@ size = Vector2(96, 220)
 [sub_resource type="LabelSettings" id="LabelSettings_result"]
 font_size = 32
 
-[node name="QueueMiniGame" type="Node2D" unique_id=809747258]
+[node name="QueueLevel1_3" type="Node2D" unique_id=809747258]
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=624964848]
 position = Vector2(160, 240)
@@ -58,7 +58,7 @@ shape = SubResource("RectangleShape2D_queue")
 
 [node name="Visual" type="Polygon2D" parent="QueuePath/PathFollow2D/QueueZone" unique_id=1714008565]
 color = Color(0.15, 0.85, 0.45, 0.25)
-polygon = PackedVector2Array(-130, -90, 130, -90, 130, 90, -130, 90)
+polygon = PackedVector2Array(-85, -55, 85, -55, 85, 55, -85, 55)
 
 [node name="GoalArea" type="Area2D" parent="." unique_id=988417655]
 position = Vector2(880, 240)
@@ -141,8 +141,8 @@ display_mode = 1
 
 [node name="QueueGameManager" type="Node" parent="." unique_id=102062141]
 script = ExtResource("3_queue_manager")
-queue_zone_size = Vector2(260, 180)
-queue_move_speed = 70.0
-obstacle_speed = 150.0
-spawn_interval = 1.45
+queue_zone_size = Vector2(170, 110)
+queue_move_speed = 125.0
+obstacle_speed = 260.0
+spawn_interval = 0.8
 score_reward = 10

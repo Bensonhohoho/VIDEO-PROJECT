@@ -8,10 +8,22 @@ extends Node
 @export var obstacle_spawner_path: NodePath = ^"../ObstacleSpawner"
 @export var result_label_path: NodePath = ^"../UI/ResultLabel"
 @export var fail_count_label_path: NodePath = ^"../UI/FailCountLabel"
+@export var drink_uses_label_path: NodePath = ^"../UI/DrinkUsesLabel"
+@export var buff_time_label_path: NodePath = ^"../UI/BuffTimeLabel"
+@export var queue_zone_size: Vector2 = Vector2(240.0, 160.0)
 @export var queue_move_speed: float = 80.0
+@export var obstacle_speed: float = 180.0
+@export var spawn_interval: float = 1.25
+@export var score_reward: int = 10
+@export var drink_uses_per_minigame: int = 2
+@export var drink_buff_duration: float = 3.0
+@export var npc_count: int = 4
+@export var npc_spacing: float = 64.0
+@export var npc_safety_margin: float = 16.0
+@export var npc_placeholder_size: Vector2 = Vector2(28.0, 42.0)
+@export var npc_placeholder_scene: PackedScene = preload("res://scenes/QueueNPCPlaceholder.tscn")
 @export_file("*.tscn") var main_scene_path := "res://scenes/game.tscn"
 @export var max_fail_count: int = 3
-@export var queue_score_reward: int = 10
 @export var reset_delay: float = 0.25
 
 var player: Node2D
@@ -22,13 +34,18 @@ var goal_area: Area2D
 var obstacle_spawner: Node
 var result_label: Label
 var fail_count_label: Label
+var drink_uses_label: Label
+var buff_time_label: Label
 
 var fail_count := 0
+var drink_uses_remaining := 0
+var drink_buff_time_left := 0.0
 var player_has_entered_queue := false
 var game_started := false
 var game_won := false
 var is_resetting := false
 var is_changing_scene := false
+var queue_npc_entries: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -41,10 +58,16 @@ func _ready() -> void:
 	obstacle_spawner = get_node_or_null(obstacle_spawner_path)
 	result_label = get_node_or_null(result_label_path) as Label
 	fail_count_label = get_node_or_null(fail_count_label_path) as Label
+	drink_uses_label = get_node_or_null(drink_uses_label_path) as Label
+	buff_time_label = get_node_or_null(buff_time_label_path) as Label
 
 	if player == null or spawn_point == null or path_follow == null or queue_zone == null or goal_area == null:
 		push_error("QueueGameManager is missing one or more required nodes.")
 		return
+
+	drink_uses_remaining = max(0, drink_uses_per_minigame)
+	_apply_level_settings()
+	_setup_queue_npcs()
 
 	queue_zone.body_entered.connect(_on_queue_zone_body_entered)
 	queue_zone.body_exited.connect(_on_queue_zone_body_exited)
@@ -57,12 +80,19 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if game_started and not game_won and not is_resetting and not is_changing_scene:
+		if Input.is_action_just_pressed("use_drink"):
+			_use_drink()
+
+		_update_drink_buff(delta)
+
 	if not game_started or game_won or is_resetting or is_changing_scene:
 		return
 
 	# The queue box follows the designer-authored Path2D by moving its
 	# PathFollow2D parent forward each physics frame.
 	path_follow.progress += queue_move_speed * delta
+	_update_queue_npc_positions()
 
 
 func reset_minigame() -> void:
@@ -71,11 +101,14 @@ func reset_minigame() -> void:
 	game_started = false
 	game_won = false
 	player_has_entered_queue = false
+	drink_buff_time_left = 0.0
 
 	_show_result("")
 	_update_fail_count_label()
+	_update_drink_ui()
 
 	path_follow.progress = 0.0
+	_reset_queue_npcs()
 
 	if player.has_method("reset_to_spawn"):
 		player.call("reset_to_spawn", spawn_point.global_position)
@@ -84,6 +117,7 @@ func reset_minigame() -> void:
 
 	if queue_zone.has_method("start_moving"):
 		queue_zone.call("start_moving")
+	_set_queue_npcs_active(true)
 
 	if obstacle_spawner != null:
 		if obstacle_spawner.has_method("reset_spawning"):
@@ -135,10 +169,16 @@ func win_minigame() -> void:
 
 	# Award the queue reward once per successful run. Failed attempts never call
 	# this function, and game_won prevents duplicate rewards from repeated signals.
-	SaveManager.add_score(queue_score_reward)
+	SaveManager.add_round_score(score_reward)
 
 	_stop_active_systems()
-	_show_result("You stayed in line!")
+	drink_buff_time_left = 0.0
+	_update_drink_ui()
+
+	if SaveManager.is_round_completed():
+		_show_result("Goal completed!")
+	else:
+		_show_result("You stayed in line!")
 
 	await get_tree().create_timer(reset_delay).timeout
 	_return_to_main_scene()
@@ -173,6 +213,9 @@ func _on_obstacle_spawner_player_hit_obstacle(body: Node2D) -> void:
 	if body != player:
 		return
 
+	if _is_drink_buff_active():
+		return
+
 	fail_minigame("Hit an obstacle!")
 
 
@@ -194,6 +237,8 @@ func _handle_queue_exit() -> void:
 func _stop_active_systems() -> void:
 	if queue_zone.has_method("stop_moving"):
 		queue_zone.call("stop_moving")
+
+	_set_queue_npcs_active(false)
 
 	if obstacle_spawner != null and obstacle_spawner.has_method("stop_spawning"):
 		obstacle_spawner.call("stop_spawning")
@@ -227,3 +272,139 @@ func _update_fail_count_label() -> void:
 		return
 
 	fail_count_label.text = "Fails: %d / %d" % [fail_count, max(1, max_fail_count)]
+
+
+func _apply_level_settings() -> void:
+	# Level scenes tune these exports while keeping the same queue path scene.
+	var collision_shape := queue_zone.get_node_or_null("CollisionShape2D") as CollisionShape2D
+	if collision_shape != null and collision_shape.shape is RectangleShape2D:
+		collision_shape.shape.size = queue_zone_size
+
+	var visual := queue_zone.get_node_or_null("Visual") as Polygon2D
+	if visual != null:
+		var half_size := queue_zone_size * 0.5
+		visual.polygon = PackedVector2Array([
+			Vector2(-half_size.x, -half_size.y),
+			Vector2(half_size.x, -half_size.y),
+			Vector2(half_size.x, half_size.y),
+			Vector2(-half_size.x, half_size.y)
+		])
+
+	if obstacle_spawner != null:
+		obstacle_spawner.set("obstacle_speed", obstacle_speed)
+		obstacle_spawner.set("spawn_interval", spawn_interval)
+
+
+func _use_drink() -> void:
+	if drink_uses_remaining <= 0 or _is_drink_buff_active():
+		return
+
+	# The drink only ignores obstacles. Queue-zone exits still fail normally.
+	drink_uses_remaining -= 1
+	drink_buff_time_left = drink_buff_duration
+	_update_drink_ui()
+
+
+func _update_drink_buff(delta: float) -> void:
+	if drink_buff_time_left <= 0.0:
+		return
+
+	drink_buff_time_left = max(0.0, drink_buff_time_left - delta)
+	_update_drink_ui()
+
+
+func _is_drink_buff_active() -> bool:
+	return drink_buff_time_left > 0.0
+
+
+func _update_drink_ui() -> void:
+	if drink_uses_label != null:
+		drink_uses_label.text = "Drinks: %d" % drink_uses_remaining
+
+	if buff_time_label == null:
+		return
+
+	if _is_drink_buff_active():
+		buff_time_label.text = "Buff: %.1fs" % drink_buff_time_left
+	else:
+		buff_time_label.text = "Buff: --"
+
+
+func _setup_queue_npcs() -> void:
+	if npc_count <= 0 or npc_placeholder_scene == null:
+		return
+
+	var queue_path := path_follow.get_parent() as Path2D
+	if queue_path == null:
+		return
+
+	var safe_spacing := _get_safe_npc_spacing()
+	var npc_colors := [
+		Color(0.95, 0.45, 0.35, 0.85),
+		Color(0.3, 0.55, 1.0, 0.85),
+		Color(1.0, 0.78, 0.25, 0.85),
+		Color(0.5, 0.9, 0.55, 0.85)
+	]
+
+	for index in range(npc_count):
+		var npc_follow := PathFollow2D.new()
+		npc_follow.name = "QueueNPCFollow%d" % (index + 1)
+		npc_follow.rotates = false
+		npc_follow.loop = false
+		npc_follow.add_to_group("queue_npc_path_follow")
+		queue_path.add_child(npc_follow)
+
+		var npc := npc_placeholder_scene.instantiate()
+		npc_follow.add_child(npc)
+
+		if npc.has_method("configure_placeholder"):
+			npc.call("configure_placeholder", npc_placeholder_size, npc_colors[index % npc_colors.size()])
+
+		var side := 1.0 if index % 2 == 0 else -1.0
+		var distance_step := floori(float(index) / 2.0) + 1
+		queue_npc_entries.append({
+			"follow": npc_follow,
+			"offset": safe_spacing * distance_step * side
+		})
+
+	_reset_queue_npcs()
+
+
+func _get_safe_npc_spacing() -> float:
+	var queue_extent := maxf(queue_zone_size.x, queue_zone_size.y) * 0.5
+	var npc_extent := maxf(npc_placeholder_size.x, npc_placeholder_size.y) * 0.5
+	return maxf(npc_spacing, queue_extent + npc_extent + npc_safety_margin)
+
+
+func _reset_queue_npcs() -> void:
+	_update_queue_npc_positions()
+	_set_queue_npcs_active(true)
+
+
+func _update_queue_npc_positions() -> void:
+	if queue_npc_entries.is_empty():
+		return
+
+	var queue_path := path_follow.get_parent() as Path2D
+	if queue_path == null or queue_path.curve == null:
+		return
+
+	var path_length := queue_path.curve.get_baked_length()
+	for entry in queue_npc_entries:
+		var npc_follow := entry["follow"] as PathFollow2D
+		if npc_follow == null:
+			continue
+
+		var target_progress := path_follow.progress + float(entry["offset"])
+		var is_on_path := target_progress >= 0.0 and target_progress <= path_length
+		npc_follow.visible = is_on_path
+
+		if is_on_path:
+			npc_follow.progress = target_progress
+
+
+func _set_queue_npcs_active(is_active: bool) -> void:
+	for entry in queue_npc_entries:
+		var npc_follow := entry["follow"] as PathFollow2D
+		if npc_follow != null:
+			npc_follow.process_mode = Node.PROCESS_MODE_INHERIT if is_active else Node.PROCESS_MODE_DISABLED
