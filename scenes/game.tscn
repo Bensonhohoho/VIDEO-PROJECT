@@ -14,6 +14,7 @@
 [ext_resource type="Script" uid="uid://cvhlg0e3fmuey" path="res://scripts/queue_entrance.gd" id="12_queue_entrance"]
 [ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="13_score_hud"]
 [ext_resource type="Script" uid="uid://bemepujlmtrnn" path="res://scripts/score_placeholder_manager.gd" id="14_score_placeholder_manager"]
+[ext_resource type="Texture2D" uid="uid://cjw2p8h731e4q" path="res://assets/BackgroundImage/T_shop_01.png" id="15_queue_shop"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbhrr"]
 texture = ExtResource("3_lnu2h")
@@ -334,13 +335,10 @@ script = ExtResource("12_queue_entrance")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="QueueEntrance" unique_id=1126686106]
 shape = SubResource("RectangleShape2D_queue_entrance")
 
-[node name="Visual" type="Polygon2D" parent="QueueEntrance" unique_id=1541905621]
-color = Color(0.16, 0.08, 0.36, 0.85)
-polygon = PackedVector2Array(-28, -44, 28, -44, 28, 44, -28, 44)
-
-[node name="Light" type="Polygon2D" parent="QueueEntrance" unique_id=745054285]
-color = Color(0.9, 0.78, 0.2, 0.75)
-polygon = PackedVector2Array(-14, -28, 14, -28, 14, 36, -14, 36)
+[node name="Visual" type="Sprite2D" parent="QueueEntrance" unique_id=1541905621]
+z_index = 1
+scale = Vector2(0.32, 0.32)
+texture = ExtResource("15_queue_shop")
 
 [node name="Label" type="Label" parent="QueueEntrance" unique_id=1729665711]
 offset_left = -26.0
@@ -489,6 +487,7 @@ text = "STAFF"
 horizontal_alignment = 1
 
 [node name="VotingBoothGate" type="Polygon2D" parent="EventMapPlaceholders/VotingEntranceDressing" unique_id=1512990642]
+visible = false
 color = Color(0.18, 0.42, 0.68, 0.65)
 polygon = PackedVector2Array(-18, -38, 18, -38, 18, 42, -18, 42)
 

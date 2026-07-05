@@ -1,19 +1,21 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bjnd4octdc46q"]
 
 [ext_resource type="Script" uid="uid://cyrluvhe66ygb" path="res://scripts/queue_player.gd" id="1_player"]
 [ext_resource type="Script" uid="uid://ch4bgqqjc315d" path="res://scripts/queue_zone.gd" id="2_queue_zone"]
 [ext_resource type="Script" uid="uid://bjtknpt0nvv88" path="res://scripts/queue_game_manager.gd" id="3_queue_manager"]
 [ext_resource type="Script" uid="uid://o68fr5qkl843" path="res://scripts/obstacle_spawner.gd" id="4_obstacle_spawner"]
 [ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="5_score_hud"]
+[ext_resource type="Script" uid="uid://cbq6nfuqsqfvp" path="res://scripts/procedural_level_decor.gd" id="6_level_decor"]
+[ext_resource type="Script" uid="uid://gus7srcytv4x" path="res://scripts/spline_texture_spawner.gd" id="7_spline_texture"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 16.0
 
 [sub_resource type="Curve2D" id="Curve2D_queue_path"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 160, 240, 0, 0, 0, 0, 177, 77, 0, 0, 0, 0, 191, 56, 0, 0, 0, 0, 211, 41, 0, 0, 0, 0, 237, 32, 0, 0, 0, 0, 266, 34, 0, 0, 0, 0, 291, 41, 0, 0, 0, 0, 308, 58, 0, 0, 0, 0, 328, 326, 0, 0, 0, 0, 342, 354, 0, 0, 0, 0, 382, 377, 0, 0, 0, 0, 420, 368, 0, 0, 0, 0, 435, 325, 0, 0, 0, 0, 452, 94, 0, 0, 0, 0, 459, 58, 0, 0, 0, 0, 467, 35, 0, 0, 0, 0, 482, 26, 0, 0, 0, 0, 502, 19, 0, 0, 0, 0, 525, 27, 0, 0, 0, 0, 537, 40, 0, 0, 0, 0, 552, 82, 0, 0, 0, 0, 593, 317, 0, 0, 0, 0, 605, 332, 0, 0, 0, 0, 621, 341, 0, 0, 0, 0, 640, 342, 0, 0, 0, 0, 659, 335, 0, 0, 0, 0, 763, 293, 0, 0, 0, 0, 880, 240)
+"points": PackedVector2Array(0, 0, 0, 0, 160, 240, 0, 0, 0, 0, 160, 146, 0, 0, 0, 0, 143, 65, 0, 0, 0, 0, 170, 19, 0, 0, 0, 0, 215, 12, 0, 0, 0, 0, 252, -23, 0, 0, 0, 0, 286, -8, 0, 0, 0, 0, 296, -8, 0, 0, 0, 0, 314, -5, 0, 0, 0, 0, 329, 16, 0, 0, 0, 0, 334, 36, 0, 0, 0, 0, 337, 52, 0, 0, 0, 0, 328, 326, 0, 0, 0, 0, 342, 354, 0, 0, 0, 0, 382, 377, 0, 0, 0, 0, 420, 368, 0, 0, 0, 0, 435, 325, 0, 0, 0, 0, 452, 94, 0, 0, 0, 0, 459, 58, 0, 0, 0, 0, 467, 35, 0, 0, 0, 0, 482, 26, 0, 0, 0, 0, 502, 19, 0, 0, 0, 0, 525, 27, 0, 0, 0, 0, 537, 40, 0, 0, 0, 0, 552, 82, 0, 0, 0, 0, 593, 317, 0, 0, 0, 0, 605, 332, 0, 0, 0, 0, 621, 341, 0, 0, 0, 0, 640, 342, 0, 0, 0, 0, 659, 335, 0, 0, 0, 0, 763, 293, 0, 0, 0, 0, 880, 240)
 }
-point_count = 28
+point_count = 32
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_queue"]
 size = Vector2(260, 180)
@@ -25,8 +27,13 @@ size = Vector2(96, 220)
 font_size = 32
 
 [node name="QueueLevel1_1" type="Node2D" unique_id=809747258]
+position = Vector2(440, 362)
+
+[node name="ProceduralLevelDecor" type="Node2D" parent="." unique_id=1201756589]
+script = ExtResource("6_level_decor")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=624964848]
+z_index = 3
 position = Vector2(160, 240)
 collision_layer = 2
 script = ExtResource("1_player")
@@ -43,6 +50,18 @@ position = Vector2(160, 240)
 
 [node name="QueuePath" type="Path2D" parent="." unique_id=1452800978]
 curve = SubResource("Curve2D_queue_path")
+
+[node name="Line2D" type="Line2D" parent="QueuePath" unique_id=1563834369]
+points = PackedVector2Array(160, 240, 177, 77, 191, 56, 211, 41, 237, 32, 266, 34, 291, 41, 308, 58, 328, 326, 342, 354, 382, 377, 420, 368, 435, 325, 452, 94, 459, 58, 467, 35, 482, 26, 502, 19, 525, 27, 537, 40, 552, 82, 593, 317, 605, 332, 621, 341, 640, 342, 659, 335, 763, 293, 880, 240)
+width = 40.0
+default_color = Color(0.3515629, 0.3515629, 0.35156286, 1)
+texture_mode = 1
+
+[node name="SplineTextureSpawner" type="Node2D" parent="QueuePath" unique_id=1460456914]
+script = ExtResource("7_spline_texture")
+atlas_regions = Array[Rect2]([Rect2(0, 0, 16, 16), Rect2(0, 0, 0, 0), Rect2(0, 0, 0, 0)])
+spacing = 10.0
+sprite_scale = Vector2(2, 2)
 
 [node name="PathFollow2D" type="PathFollow2D" parent="QueuePath" unique_id=489343888]
 position = Vector2(160, 240)
@@ -145,4 +164,3 @@ queue_zone_size = Vector2(260, 180)
 queue_move_speed = 70.0
 obstacle_speed = 150.0
 spawn_interval = 1.45
-score_reward = 10
