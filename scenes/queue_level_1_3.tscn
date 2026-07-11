@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://bjtknpt0nvv88" path="res://scripts/queue_game_manager.gd" id="3_queue_manager"]
 [ext_resource type="Script" uid="uid://o68fr5qkl843" path="res://scripts/obstacle_spawner.gd" id="4_obstacle_spawner"]
 [ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="5_score_hud"]
+[ext_resource type="Texture2D" path="res://assets/BackgroundImage/queue/queue_floor_stone.png" id="6_queue_floor"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 16.0
@@ -25,6 +26,11 @@ size = Vector2(96, 220)
 font_size = 32
 
 [node name="QueueLevel1_3" type="Node2D" unique_id=809747258]
+
+[node name="Floor" type="Sprite2D" parent="."]
+z_index = -100
+centered = false
+texture = ExtResource("6_queue_floor")
 
 [node name="Player" type="CharacterBody2D" parent="." unique_id=624964848]
 position = Vector2(160, 240)

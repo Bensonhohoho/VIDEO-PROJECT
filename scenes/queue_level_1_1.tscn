@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://ckxaeem58727a" path="res://scripts/score_hud.gd" id="5_score_hud"]
 [ext_resource type="Script" uid="uid://cbq6nfuqsqfvp" path="res://scripts/procedural_level_decor.gd" id="6_level_decor"]
 [ext_resource type="Script" uid="uid://gus7srcytv4x" path="res://scripts/spline_texture_spawner.gd" id="7_spline_texture"]
+[ext_resource type="Texture2D" path="res://assets/BackgroundImage/queue/queue_floor_stone.png" id="8_queue_floor"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_player"]
 radius = 16.0
@@ -28,6 +29,12 @@ font_size = 32
 
 [node name="QueueLevel1_1" type="Node2D" unique_id=809747258]
 position = Vector2(440, 362)
+
+[node name="Floor" type="Sprite2D" parent="."]
+z_index = -100
+position = Vector2(-440, -362)
+centered = false
+texture = ExtResource("8_queue_floor")
 
 [node name="ProceduralLevelDecor" type="Node2D" parent="." unique_id=1201756589]
 script = ExtResource("6_level_decor")
